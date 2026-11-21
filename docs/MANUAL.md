@@ -2,9 +2,9 @@
 
 # Batch Audio Converter — User Manual
 
-Batch Audio Converter is a small macOS app for converting lots of audio files at once. Drag in files or whole folders, choose a format and a few options, and click **Convert**. The actual conversion is done by [ffmpeg](https://ffmpeg.org), which the app runs for you.
+Batch Audio Converter is a small macOS app for converting lots of audio files at once. Drag in files or whole folders, choose a format and a few options, and click **Convert**. The actual conversion is done by [ffmpeg](https://ffmpeg.org), which is built into the app.
 
-**Requires:** macOS 13 (Ventura) or newer, and ffmpeg.
+**Requires:** macOS 13 (Ventura) or newer (Apple Silicon or Intel). Nothing else to install.
 
 > **Disclaimer — no warranty.** This software is provided **"as is"**, without warranty of any kind. It is free to use under the MIT License (see [LICENSE](../LICENSE)). The authors are not liable for any loss or damage, including lost, overwritten or corrupted audio files. **Back up anything you care about before converting, especially if you choose "Replace".**
 
@@ -28,30 +28,17 @@ Batch Audio Converter is a small macOS app for converting lots of audio files at
 
 ## 1. Installing
 
-The app is built from source. You need Xcode's command-line tools (for Swift) and [Homebrew](https://brew.sh).
+1. Download `BatchAudioConverter-<version>-macOS.zip` from the project's **Releases** page and unzip it.
+2. Drag **Batch Audio Converter.app** into your **Applications** folder.
+3. The first time, **right-click the app, choose Open, then confirm.** The app isn't notarized by Apple, so macOS warns about it once. If macOS still refuses, run `xattr -dr com.apple.quarantine "/Applications/Batch Audio Converter.app"` in Terminal.
 
-```bash
-xcode-select --install     # only if you don't already have the Swift toolchain
-brew install ffmpeg
-bash build_app.sh
-```
+ffmpeg is bundled inside the app, so there is nothing else to install.
 
-This produces **Batch Audio Converter.app** in the project folder. Drag it into your **Applications** folder.
-
-The app looks for ffmpeg in these places, in order:
-
-1. Inside the app bundle (`Contents/Resources/ffmpeg`), if you chose to bundle one
-2. `/opt/homebrew/bin/ffmpeg` (Homebrew on Apple Silicon)
-3. `/usr/local/bin/ffmpeg` (Homebrew on Intel)
-4. `/opt/local/bin/ffmpeg` (MacPorts)
-
-If none is found, a yellow banner appears at the top of the window:
+**Building from source?** See the README. If you build without the bundled ffmpeg, the app looks for one in `/opt/homebrew/bin`, `/usr/local/bin` or `/opt/local/bin`, and shows this banner if it finds none:
 
 ![ffmpeg missing banner](images/ffmpeg.png)
 
-Install ffmpeg as shown, then click **Check Again**. You don't need to restart the app.
-
-> **First launch:** the build script signs the app with a local (ad-hoc) signature. If you build it yourself it should open normally. If macOS blocks an app you received from someone else, right-click it, choose **Open**, then confirm.
+Install ffmpeg as shown (`brew install ffmpeg`) and click **Check Again**. Official release builds never show this banner.
 
 ---
 
@@ -224,11 +211,8 @@ The button bar shows a progress bar and a count like **6 of 6**. Failed files re
 
 ## 10. Troubleshooting
 
-**"ffmpeg not found" banner won't go away.**
-Run `which ffmpeg` in Terminal. If it prints nothing, run `brew install ffmpeg`. If it prints a path other than the four listed in [Installing](#1-installing), the app can't see it. Install through Homebrew or place a copy inside the app at `Contents/Resources/ffmpeg`. Then click **Check Again**.
-
 **The Convert button is greyed out.**
-Either the list is empty, every file has already finished, or ffmpeg isn't installed.
+Either the list is empty, every file has already finished, or (source builds only) no ffmpeg was found.
 
 **A file failed.**
 Read the red message under its name. Common causes are a corrupt file, a video with no audio track, an unsupported file type, or a destination folder you don't have permission to write to.
@@ -250,4 +234,4 @@ Make sure you're dropping onto the file list area, and that the app isn't in the
 
 The software is released under the **MIT License**. See the [LICENSE](../LICENSE) file for the full text.
 
-**ffmpeg** is a separate program and is **not** part of this project or its license. It is distributed under its own license terms (LGPL or GPL depending on how it was built). See [ffmpeg.org/legal.html](https://ffmpeg.org/legal.html). This app is not affiliated with or endorsed by the ffmpeg project or Apple.
+The **ffmpeg** program bundled in the app is a separate work and is **not** covered by the MIT License. It is built without GPL or non-free components and is licensed under the **LGPL v2.1 or later**, together with LAME (LGPL), libvorbis, libogg and libopus (BSD-style). The license texts are in the app at `Contents/Resources/Licenses`, and [THIRD_PARTY.md](../THIRD_PARTY.md) lists sources and how to rebuild or replace it. This app is not affiliated with or endorsed by the ffmpeg project or Apple.

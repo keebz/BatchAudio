@@ -1,6 +1,8 @@
-## Batch Audio Converter 1.0
+## Batch Audio Converter 1.1
 
-Simple macOS app for batch-converting audio files with ffmpeg.
+Simple macOS app for batch-converting audio files.
+
+**New in 1.1:** ffmpeg is now **bundled inside the app**. There is nothing else to install.
 
 **Features**
 - Drag in files or whole folders (subfolders included)
@@ -9,12 +11,12 @@ Simple macOS app for batch-converting audio files with ffmpeg.
 - Keep originals, or replace them (originals go to the Trash)
 - Keep or clear metadata; cover art preserved where supported
 
-**Requirements:** macOS 13 or newer, and ffmpeg (`brew install ffmpeg`). ffmpeg is not included.
+**Requirements:** macOS 13 or newer, Apple Silicon or Intel.
 
 **Install:** unzip, drag **Batch Audio Converter.app** to Applications. The app is ad-hoc signed, not notarized, so on first launch right-click it, choose **Open**, then confirm. If macOS still refuses, run `xattr -dr com.apple.quarantine "/Applications/Batch Audio Converter.app"`.
 
-See the [User Manual](docs/MANUAL.md).
+See the [User Manual](docs/MANUAL.md). The bundled ffmpeg is LGPL; see [THIRD_PARTY.md](THIRD_PARTY.md).
 
 **Disclaimer:** provided "as is", without warranty of any kind. Back up your files before converting. MIT licensed.
 
-Verify the download: `shasum -a 256 -c BatchAudioConverter-1.0-macOS.zip.sha256`
+Verify the download: `shasum -a 256 -c BatchAudioConverter-1.1-macOS.zip.sha256`
