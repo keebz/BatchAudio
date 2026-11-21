@@ -3,11 +3,17 @@
 set -e
 cd "$(dirname "$0")"
 
-swift build -c release
+if [ "${UNIVERSAL:-0}" = "1" ]; then
+  swift build -c release --arch arm64 --arch x86_64
+  BIN=.build/apple/Products/Release/BatchAudio
+else
+  swift build -c release
+  BIN=.build/release/BatchAudio
+fi
 APP="Batch Audio Converter.app"
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp .build/release/BatchAudio "$APP/Contents/MacOS/BatchAudio"
+cp "$BIN" "$APP/Contents/MacOS/BatchAudio"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 
 cat > "$APP/Contents/Info.plist" <<PLIST
