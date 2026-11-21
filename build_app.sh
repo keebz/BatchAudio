@@ -16,6 +16,21 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN" "$APP/Contents/MacOS/BatchAudio"
 cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 
+# Bundle ffmpeg if one has been built (scripts/build_ffmpeg.sh) or supplied via FFMPEG_BIN.
+FF="${FFMPEG_BIN:-build/ffmpeg/out/ffmpeg}"
+if [ -x "$FF" ]; then
+  cp "$FF" "$APP/Contents/Resources/ffmpeg"
+  LIC="$(dirname "$FF")"
+  if [ -d "$LIC/licenses" ]; then
+    mkdir -p "$APP/Contents/Resources/Licenses"
+    cp "$LIC"/licenses/* "$APP/Contents/Resources/Licenses/"
+    [ -f "$LIC/BUILD-INFO.txt" ] && cp "$LIC/BUILD-INFO.txt" "$APP/Contents/Resources/Licenses/"
+  fi
+  echo "Bundled ffmpeg from $FF"
+else
+  echo "No bundled ffmpeg (run scripts/build_ffmpeg.sh first); app will use a system ffmpeg."
+fi
+
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -35,5 +50,5 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
-codesign --force --sign - "$APP" >/dev/null 2>&1 || true
+codesign --force --deep --sign - "$APP" >/dev/null 2>&1 || true
 echo "Built: $(pwd)/$APP"

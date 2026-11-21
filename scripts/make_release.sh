@@ -6,10 +6,11 @@ set -e
 cd "$(dirname "$0")/.."
 VERSION="${1:?usage: make_release.sh <version, e.g. 1.0>}"
 
+[ -x build/ffmpeg/out/ffmpeg ] || bash scripts/build_ffmpeg.sh
 UNIVERSAL=1 bash build_app.sh
 APP="Batch Audio Converter.app"
 /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION" "$APP/Contents/Info.plist"
-codesign --force --sign - "$APP" >/dev/null 2>&1 || true
+codesign --force --deep --sign - "$APP" >/dev/null 2>&1 || true
 
 mkdir -p dist
 ZIP="dist/BatchAudioConverter-$VERSION-macOS.zip"

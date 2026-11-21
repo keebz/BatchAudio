@@ -2,6 +2,7 @@ name: Release
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
@@ -9,9 +10,35 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: brew install nasm pkgconf
+
+      - name: Restore bundled ffmpeg cache
+        id: ffcache
+        uses: actions/cache@v4
+        with:
+          path: build/ffmpeg/out
+          key: ffmpeg-${{ hashFiles('scripts/build_ffmpeg.sh') }}
+
+      - name: Build bundled ffmpeg (universal, LGPL)
+        if: steps.ffcache.outputs.cache-hit != 'true'
+        run: bash scripts/build_ffmpeg.sh
+
       - name: Build universal app and package
-        run: bash scripts/make_release.sh "${GITHUB_REF_NAME#v}"
+        run: |
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then V="${GITHUB_REF_NAME#v}"; else V="dev"; fi
+          bash scripts/make_release.sh "$V"
+
+      - name: Upload build artifacts (manual runs)
+        if: github.ref_type != 'tag'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
       - name: Create GitHub Release
+        if: github.ref_type == 'tag'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
