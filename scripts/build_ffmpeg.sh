@@ -69,7 +69,7 @@ build_arch() {
   untar "libogg-$OGG_VER.tar.xz"; ( cd "$W/libogg-$OGG_VER" && ./configure $common >/dev/null && make -j"$JOBS" >/dev/null && make install >/dev/null )
 
   echo "=== [$ARCH] libvorbis"
-  untar "libvorbis-$VORBIS_VER.tar.xz"; ( cd "$W/libvorbis-$VORBIS_VER" && ./configure $common --disable-examples --disable-docs --disable-oggtest >/dev/null && make -j"$JOBS" >/dev/null && make install >/dev/null )
+  untar "libvorbis-$VORBIS_VER.tar.xz"; ( cd "$W/libvorbis-$VORBIS_VER" && sed -i.bak 's/-force_cpusubtype_ALL//g' configure && ./configure $common --disable-examples --disable-docs --disable-oggtest >/dev/null && make -j"$JOBS" >/dev/null && make install >/dev/null )
 
   echo "=== [$ARCH] opus"
   untar "opus-$OPUS_VER.tar.gz"; ( cd "$W/opus-$OPUS_VER" && ./configure $common --disable-doc --disable-extra-programs >/dev/null && make -j"$JOBS" >/dev/null && make install >/dev/null )
