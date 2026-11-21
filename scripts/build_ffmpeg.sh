@@ -90,7 +90,7 @@ build_arch() {
       --enable-libmp3lame --enable-libvorbis --enable-libopus \
       --disable-encoders \
       --enable-encoder=aac,alac,flac,libmp3lame,libvorbis,libopus,pcm_s16le,pcm_s24le,pcm_s32le,pcm_s16be,pcm_s24be,pcm_s32be \
-      --pkg-config-flags="--static" \
+      --pkg-config-flags="--static" --extra-libs="-liconv -lz" \
       --extra-cflags="-I$P/include -mmacosx-version-min=$MIN_MACOS" \
       --extra-ldflags="-L$P/lib -mmacosx-version-min=$MIN_MACOS" \
       > "$W/configure.log" 2>&1 || { tail -40 "$W/configure.log"; exit 1; }
